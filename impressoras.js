@@ -14,8 +14,9 @@ async function listarImpressoras() {
     div.innerHTML = "<p style='text-align:center;'>Carregando impressoras...</p>";
 
     try {
-        const snapshot = await db.collection("impressoras").get();
-        div.innerHTML = "";
+        const snapshot = await fbGetDocs(
+    fbCollection(db, "impressoras")
+);
 
         if (snapshot.empty) {
             div.innerHTML = "<p style='text-align:center;'>Nenhuma impressora cadastrada.</p>";
@@ -66,13 +67,16 @@ async function salvarImpressora() {
     }
 
     try {
-        await db.collection("impressoras").add({
-            fabricante,
-            modelo,
-            toner,
-            cheio,
-            vazio
-        });
+        await fbAddDoc(
+    fbCollection(db, "impressoras"),
+    {
+        fabricante,
+        modelo,
+        toner,
+        cheio,
+        vazio
+    }
+);
 
         limparFormulario();
         listarImpressoras();
