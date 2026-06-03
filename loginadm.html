@@ -1,0 +1,11 @@
+function login() {
+const usuario = document.getElementById("usuario").value;
+const senha = document.getElementById("senha").value;
+
+if(usuario === "admin" && senha === "toner"){
+localStorage.setItem("admLogado", "true");
+window.location.href = "impressoras.html";
+} else {
+alert("Usuário ou senha inválidos");
+}
+}

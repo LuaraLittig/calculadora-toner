@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Impressoras</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <div class="box">
+
+        <div class="logo-topo">
+            <img src="logo.png" alt="Logo">
+        </div>
+
+        <h2>Cadastro de Impressoras</h2>
+        <p>Cadastre e gerencie as impressoras</p>
+
+        <input type="text" id="fabricante" placeholder="Fabricante">
+        <input type="text" id="modelo" placeholder="Modelo da Impressora">
+        <input type="text" id="toner" placeholder="Modelo do Toner">
+        <input type="number" id="cheio" placeholder="Peso cheio (g)">
+        <input type="number" id="vazio" placeholder="Peso vazio (g)">
+
+        <button id="btnSalvar" onclick="salvarImpressora()">
+            Cadastrar Impressora
+        </button>
+
+        <button id="btnAtualizar" onclick="atualizarImpressora()" style="display:none;">
+            Atualizar Impressora
+        </button>
+
+        <button class="btn-sair" onclick="logout()">
+            Sair
+        </button>
+
+        <a href="index.html" class="link-admin">
+            ⬅ Voltar para Calculadora
+        </a>
+
+        <hr style="margin:20px 0; border:1px solid #334155;">
+
+        <h3 style="text-align:center; margin-bottom:10px;">
+            📋 Impressoras Cadastradas
+        </h3>
+
+        <div id="listaImpressoras"></div>
+
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="conexao.js"></script>
+
+    <script src="impressoras.js"></script>
+
+
+</body>
+
+</html>

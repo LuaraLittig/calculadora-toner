@@ -1,0 +1,271 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #0b3b50;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+  color: white;
+  box-sizing: border-box;
+}
+
+.box {
+  background: rgba(30, 41, 59, 0.95);
+  padding: 28px;
+  border-radius: 14px;
+  width: 440px;
+  max-width: 100%;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
+}
+
+.logo-topo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.logo-topo img {
+  width: 140px;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 5px;
+  font-size: 28px;
+}
+
+p {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 18px;
+  font-size: 14px;
+  color: #cbd5e1;
+}
+
+select,
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+input::placeholder {
+  color: #64748b;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 18px;
+  background: #3b82f6;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 16px;
+}
+
+button:hover {
+  background: #2563eb;
+}
+
+.btn-etiqueta {
+  width: 100%;
+  padding: 14px;
+  margin-top: 15px;
+  background: #22c55e;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 16px;
+}
+
+.btn-etiqueta:hover {
+  background: #16a34a;
+}
+
+.btn-sair {
+  width: 100%;
+  padding: 14px;
+  margin-top: 10px;
+  background: #ef4444;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 16px;
+}
+
+.btn-sair:hover {
+  background: #dc2626;
+}
+
+.resultado-box {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.6);
+  text-align: center;
+  display: none;
+}
+
+#resultado {
+  font-size: 32px;
+  font-weight: bold;
+  color: #38bdf8;
+  margin-bottom: 6px;
+}
+
+#status {
+  font-size: 15px;
+  color: #f8fafc;
+  margin-bottom: 14px;
+}
+
+.progress {
+  width: 100%;
+  height: 12px;
+  background: #334155;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: #38bdf8;
+  transition: 0.4s;
+}
+
+.mensagem {
+  margin-top: 12px;
+  font-size: 14px;
+  text-align: center;
+  display: none;
+}
+
+.erro {
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  color: #fecaca;
+}
+
+.sucesso {
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(34, 197, 94, 0.2);
+  border: 1px solid rgba(34, 197, 94, 0.5);
+  color: #bbf7d0;
+}
+
+.link-admin {
+  display: block;
+  text-align: center;
+  margin-top: 14px;
+  text-decoration: none;
+  color: #38bdf8;
+  font-size: 14px;
+}
+
+.link-admin:hover {
+  text-decoration: underline;
+}
+
+.item-toner {
+  background: rgba(15, 23, 42, 0.6);
+  padding: 12px;
+  border-radius: 10px;
+  margin-top: 12px;
+  border: 1px solid #334155;
+  font-size: 14px;
+  color: #e2e8f0;
+}
+
+.item-toner strong {
+  font-size: 15px;
+  color: #38bdf8;
+}
+
+.item-toner span {
+  display: block;
+  margin-top: 4px;
+  color: #cbd5e1;
+}
+
+.acoes {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn-editar {
+  flex: 1;
+  padding: 10px;
+  background: #f59e0b;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  color: white;
+  transition: 0.3s;
+  margin-top: 0;
+}
+
+.btn-editar:hover {
+  background: #d97706;
+}
+
+.btn-excluir {
+  flex: 1;
+  padding: 10px;
+  background: #ef4444;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  color: white;
+  transition: 0.3s;
+  margin-top: 0;
+}
+
+.btn-excluir:hover {
+  background: #dc2626;
+}
+
+@media (max-width: 480px) {
+  .box {
+    padding: 20px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+
+  button {
+    font-size: 15px;
+  }
+
+  .logo-topo img {
+    width: 120px;
+  }
+}

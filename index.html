@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Toner</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <div class="box">
+
+        <div class="logo-topo">
+            <img src="logo.png" alt="Logo Supriservice">
+        </div>
+
+        <h2>Calculadora de Toner</h2>
+        <p>Selecione o modelo e informe o peso em gramas</p>
+
+        <select id="modelo"></select>
+
+        <input type="number" id="peso" placeholder="Peso (g)">
+
+        <button onclick="calcular()">Calcular</button>
+
+        <a href="admin.html" class="link-admin">Acessar Área ADM</a>
+
+        <div id="erro" class="mensagem erro"></div>
+
+        <div class="resultado-box" id="resultadoBox">
+            <div id="resultado"></div>
+            <div id="status"></div>
+
+            <div class="progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+            <button class="btn-etiqueta" onclick="imprimirEtiqueta()">Imprimir Etiqueta</button>
+        </div>
+
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="conexao.js"></script>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
