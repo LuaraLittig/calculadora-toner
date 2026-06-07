@@ -1,4 +1,5 @@
 
+
 const firebaseConfig = {
   apiKey: "AIzaSyB_s8IY3spTF2dymTveOl3U5vf8UV72roo",
   authDomain: "calculadora-toners.firebaseapp.com",
