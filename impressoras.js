@@ -1,10 +1,24 @@
 
+
 firebase.auth().onAuthStateChanged((user) => {
     if (!user) {
         localStorage.removeItem("admLogado");
         window.location.href = "admin.html";
+    } else {
+        
+        listarImpressoras(); 
     }
-});
+}); 
+
+ar
+function salvarImpressora() {
+    
+}
+
+
+function listarImpressoras() { /* ... */ }
+function excluirImpressora(id) { /* ... */ }
+function logout() { /* ... */ }
 
 
 function logout() {
