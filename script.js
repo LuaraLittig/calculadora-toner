@@ -3,7 +3,7 @@ const modelosPadrao = {
     brother3492: { nome: "Brother TN-3492", cheio: 1100, vazio: 500 }
 };
 
-// Começa vazio e será preenchido com os dados vindos do Firebase
+
 let modelos = {};
 
 const modeloSelect = document.getElementById("modelo");
@@ -19,16 +19,16 @@ let ultimaPorcentagem = null;
 let ultimoPeso = null;
 let ultimoModelo = null;
 
-// FUNÇÃO ASSÍNCRONA: Puxa os toners cadastrados na nuvem do Firebase
+
 async function carregarModelosDoBanco() {
     try {
-        // Busca todos os documentos da coleção "impressoras"
+        
         const snapshot = await db.collection("impressoras").get();
         const modelosCarregados = {};
 
         snapshot.forEach((doc) => {
             const item = doc.data();
-            // Mapeia os dados usando o ID único do Firebase como chave
+            
             modelosCarregados[doc.id] = {
                 nome: item.modelo + " - " + item.toner,
                 cheio: Number(item.cheio),
@@ -36,7 +36,7 @@ async function carregarModelosDoBanco() {
             };
         });
 
-        // Se o banco de dados estiver vazio, usa os modelos padrão locais
+        
         if (Object.keys(modelosCarregados).length === 0) {
             modelos = modelosPadrao;
         } else {
@@ -48,7 +48,7 @@ async function carregarModelosDoBanco() {
         modelos = modelosPadrao;
     }
 
-    // Após carregar os dados com sucesso, atualiza a interface
+   
     preencherSelectModelos();
     atualizarLimitePeso();
 }
@@ -102,8 +102,7 @@ function obterStatus(porcentagem) {
 function calcular() {
     limparErro();
 
-    // Não precisamos recarregar do banco a cada clique (evita consumo de rede),
-    // pois a lista global 'modelos' já foi populada pelo Firebase ao abrir a página.
+    
     const modelo = modeloSelect.value;
     const peso = parseFloat(pesoInput.value);
 
@@ -165,12 +164,12 @@ function imprimirEtiqueta() {
     };
 }
 
-// Inicialização correta: Aguarda os elementos do HTML existirem na tela
+
 document.addEventListener("DOMContentLoaded", () => {
-    // Inicia a busca assíncrona no Firebase
+  
     carregarModelosDoBanco();
 
-    // Configura os ouvintes de eventos de forma segura
+  
     if (modeloSelect) {
         modeloSelect.addEventListener("change", atualizarLimitePeso);
     }
