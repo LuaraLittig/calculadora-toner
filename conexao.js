@@ -1,14 +1,16 @@
+
 const firebaseConfig = {
-    apiKey: "AIzaSyCXLVp9OKXJ5zBTLB4KIO80qqDhsXONyBE",
-    authDomain: "calculadora-toner.firebaseapp.com",
-    projectId: "calculadora-toner",
-    storageBucket: "calculadora-toner.firebasestorage.app",
-    messagingSenderId: "301287142175",
-    appId: "1:301287142175:web:544692f7632220b26e362a"
+  apiKey: "AIzaSyB_s8IY3spTF2dymTveOl3U5vf8UV72roo",
+  authDomain: "calculadora-toners.firebaseapp.com",
+  projectId: "calculadora-toners",
+  storageBucket: "calculadora-toners.firebasestorage.app",
+  messagingSenderId: "236026866483",
+  appId: "1:236026866483:web:b3bdee4228c4eeaa2e2c46",
+  measurementId: "G-W44GTS5DKZ"
 };
+
 
 firebase.initializeApp(firebaseConfig);
 
-const db = firebase.firestore();
 
-window.db = db;
+const db = firebase.firestore();
