@@ -1,87 +1,33 @@
-
-
+// ==========================================
+// 1. PROTEÇÃO DE TELA (NATIVO DO FIREBASE)
+// ==========================================
 firebase.auth().onAuthStateChanged((user) => {
     if (!user) {
         localStorage.removeItem("admLogado");
         window.location.href = "admin.html";
     } else {
-        
-        listarImpressoras(); 
+        listarImpressoras(); // Carrega os dados se o usuário estiver logado
     }
-}); 
+});
 
-ar
-function salvarImpressora() {
-    
+let indiceEditandoId = null;
+
+function limparFormulario() {
+    document.getElementById("fabricante").value = "";
+    document.getElementById("modelo").value = "";
+    document.getElementById("toner").value = "";
+    document.getElementById("cheio").value = "";
+    document.getElementById("vazio").value = "";
+
+    indiceEditandoId = null;
+
+    if(document.getElementById("btnSalvar")) document.getElementById("btnSalvar").style.display = "block";
+    if(document.getElementById("btnAtualizar")) document.getElementById("btnAtualizar").style.display = "none";
 }
 
-
-function listarImpressoras() { /* ... */ }
-function excluirImpressora(id) { /* ... */ }
-function logout() { /* ... */ }
-
-
-function logout() {
-    firebase.auth().signOut().then(() => {
-        localStorage.removeItem("admLogado");
-        window.location.href = "admin.html";
-    });
-}
-if (localStorage.getItem("admLogado") !== "true") {
-    window.location.href = "admin.html";
-}
-
-
-let idEditando = null;
-
-
-async function listarImpressoras() {
-    const div = document.getElementById("listaImpressoras");
-    if (!div) return;
-
-    div.innerHTML = "<p style='text-align:center;'>Carregando impressoras...</p>";
-
-    try {
-        const snapshot = await fbGetDocs(
-    fbCollection(db, "impressoras")
-);
-
-        if (snapshot.empty) {
-            div.innerHTML = "<p style='text-align:center;'>Nenhuma impressora cadastrada.</p>";
-            return;
-        }
-
-        snapshot.forEach((doc) => {
-            const item = doc.data();
-            const id = doc.id; 
-
-            div.innerHTML += `
-                <div class="item-toner">
-                    <strong>${item.modelo}</strong><br>
-                    <span>Fabricante: ${item.fabricante}</span><br>
-                    <span>Toner: ${item.toner}</span>
-                    <span>Peso Cheio: ${item.cheio}g | Vazio: ${item.vazio}g</span>
-
-                    <div class="acoes">
-                        <button class="btn-editar" 
-                            onclick="editarImpressora('${id}', '${item.fabricante}', '${item.modelo}', '${item.toner}', ${item.cheio}, ${item.vazio})">
-                            Editar
-                        </button>
-                        <button class="btn-excluir" 
-                            onclick="excluirImpressora('${id}')">
-                            Excluir
-                        </button>
-                    </div>
-                </div>
-            `;
-        });
-    } catch (erro) {
-        console.error("Erro ao listar do Firebase:", erro);
-        div.innerHTML = "<p style='text-align:center; color:red;'>Erro ao carregar os dados. ❌</p>";
-    }
-}
-
-
+// ==========================================
+// 2. FUNÇÃO: SALVAR IMPRESSORA
+// ==========================================
 async function salvarImpressora() {
     const fabricante = document.getElementById("fabricante").value.trim();
     const modelo = document.getElementById("modelo").value.trim();
@@ -90,47 +36,54 @@ async function salvarImpressora() {
     const vazio = parseFloat(document.getElementById("vazio").value);
 
     if (!fabricante || !modelo || !toner || isNaN(cheio) || isNaN(vazio)) {
-        alert("Preencha todos os campos.");
+        alert("Preencha todos os campos corretamente.");
         return;
     }
 
     try {
-        await fbAddDoc(
-    fbCollection(db, "impressoras"),
-    {
-        fabricante,
-        modelo,
-        toner,
-        cheio,
-        vazio
-    }
-);
+        await db.collection("impressoras").add({
+            fabricante,
+            modelo,
+            toner,
+            cheio,
+            vazio,
+            criadoEm: firebase.firestore.FieldValue.serverTimestamp()
+        });
 
         limparFormulario();
         listarImpressoras();
     } catch (erro) {
-        console.error("Erro ao salvar:", erro);
-        alert("Erro ao salvar no banco de dados.");
+        console.error("Erro ao salvar no Firebase:", erro);
+        alert("Erro ao salvar os dados.");
     }
 }
 
+// ==========================================
+// 3. OUTRAS FUNÇÕES DE GERENCIAMENTO
+// ==========================================
+async function editarImpressora(id) {
+    try {
+        const doc = await db.collection("impressoras").doc(id).get();
+        if (!doc.exists) return;
 
-function editarImpressora(id, fabricante, modelo, toner, cheio, vazio) {
-    idEditando = id;
+        const item = doc.data();
+        document.getElementById("fabricante").value = item.fabricante;
+        document.getElementById("modelo").value = item.modelo;
+        document.getElementById("toner").value = item.toner;
+        document.getElementById("cheio").value = item.cheio;
+        document.getElementById("vazio").value = item.vazio;
 
-    document.getElementById("fabricante").value = fabricante;
-    document.getElementById("modelo").value = modelo;
-    document.getElementById("toner").value = toner;
-    document.getElementById("cheio").value = cheio;
-    document.getElementById("vazio").value = vazio;
+        indiceEditandoId = id;
 
-    document.getElementById("btnSalvar").style.display = "none";
-    document.getElementById("btnAtualizar").style.display = "block";
+        if(document.getElementById("btnSalvar")) document.getElementById("btnSalvar").style.display = "none";
+        if(document.getElementById("btnAtualizar")) document.getElementById("btnAtualizar").style.display = "block";
+    } catch (erro) {
+        console.error("Erro ao buscar dados:", erro);
+    }
 }
 
-
 async function atualizarImpressora() {
-    if (!idEditando) return;
+    if (!indiceEditandoId) return;
 
     const fabricante = document.getElementById("fabricante").value.trim();
     const modelo = document.getElementById("modelo").value.trim();
@@ -144,7 +97,7 @@ async function atualizarImpressora() {
     }
 
     try {
-        await db.collection("impressoras").doc(idEditando).set({
+        await db.collection("impressoras").doc(indiceEditandoId).update({
             fabricante,
             modelo,
             toner,
@@ -156,44 +109,67 @@ async function atualizarImpressora() {
         listarImpressoras();
     } catch (erro) {
         console.error("Erro ao atualizar:", erro);
-        alert("Erro ao atualizar dados.");
     }
 }
 
-
 async function excluirImpressora(id) {
-    if (!confirm("Deseja realmente excluir esta impressora?")) {
-        return;
-    }
+    if (!confirm("Deseja realmente excluir esta impressora?")) return;
 
     try {
         await db.collection("impressoras").doc(id).delete();
         listarImpressoras();
     } catch (erro) {
-        console.error("Erro ao deletar:", erro);
-        alert("Erro ao excluir do banco de dados.");
+        console.error("Erro ao excluir:", erro);
     }
 }
 
-function limparFormulario() {
-    document.getElementById("fabricante").value = "";
-    document.getElementById("modelo").value = "";
-    document.getElementById("toner").value = "";
-    document.getElementById("cheio").value = "";
-    document.getElementById("vazio").value = "";
+async function listarImpressoras() {
+    const div = document.getElementById("listaImpressoras");
+    if (!div) return;
+    div.innerHTML = "";
 
-    idEditando = null;
+    try {
+        const snapshot = await db.collection("impressoras").get();
 
-    document.getElementById("btnSalvar").style.display = "block";
-    document.getElementById("btnAtualizar").style.display = "none";
+        if (snapshot.empty) {
+            div.innerHTML = "<p style='text-align:center;'>Nenhuma impressora cadastrada.</p>";
+            return;
+        }
+
+        snapshot.forEach((doc) => {
+            const item = doc.data();
+            const id = doc.id;
+
+            div.innerHTML += `
+                <div class="item-toner">
+                    <strong>${item.modelo}</strong><br>
+                    <span>Fabricante: ${item.fabricante}</span><br>
+                    <span>Toner: ${item.toner}</span>
+                    <div class="acoes">
+                        <button class="btn-editar" onclick="editarImpressora('${id}')">Editar</button>
+                        <button class="btn-excluir" onclick="excluirImpressora('${id}')">Excluir</button>
+                    </div>
+                </div>
+            `;
+        });
+    } catch (erro) {
+        console.error("Erro ao listar:", erro);
+    }
 }
 
 function logout() {
-    localStorage.removeItem("admLogado");
-    window.location.href = "admin.html";
+    firebase.auth().signOut().then(() => {
+        localStorage.removeItem("admLogado");
+        window.location.href = "admin.html";
+    });
 }
 
-
-document.addEventListener("DOMContentLoaded", listarImpressoras);
-
+// ==========================================
+// 4. BLINDAGEM FORÇADA DE ESCOPO GLOBAL
+// ==========================================
 window.salvarImpressora = salvarImpressora;
+window.listarImpressoras = listarImpressoras;
+window.editarImpressora = editarImpressora;
+window.atualizarImpressora = atualizarImpressora;
+window.excluirImpressora = excluirImpressora;
+window.logout = logout;
