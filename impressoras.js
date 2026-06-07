@@ -193,5 +193,7 @@ function logout() {
     window.location.href = "admin.html";
 }
 
-// Executa automaticamente assim que a página abre
+
 document.addEventListener("DOMContentLoaded", listarImpressoras);
+
+window.salvarImpressora = salvarImpressora;
