@@ -20,7 +20,7 @@ function limparErroLogin() {
 }
 
 function login() {
-    // IMPORTANTE: O campo "usuario" do seu HTML agora deve receber o E-MAIL que você criou no Firebase
+   
     const email = document.getElementById("usuario").value.trim(); 
     const Glen = document.getElementById("senha").value.trim();
 
@@ -29,9 +29,21 @@ function login() {
         return;
     }
 
+    
+    firebase.auth().signInWithEmailAndPassword(email, senha)
+        .then((userCredential) => {
+    
+            localStorage.setItem("admLogado", "true");
+            window.location.href = "impressoras.html";
+        })
+        .catch((error) => {
+            console.error("Erro ao logar:", error.message);
+            alert("E-mail ou senha incorretos! ❌");
+        });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-    // Força a desconexão sempre que entrar na página de login.
-    // Assim, o usuário DEVE digitar a senha novamente.
+    
     localStorage.removeItem("admLogado");
 
     const senhaInput = document.getElementById("senha");
