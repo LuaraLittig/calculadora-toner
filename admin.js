@@ -20,18 +20,14 @@ function limparErroLogin() {
 }
 
 function login() {
-    limparErroLogin();
+    // IMPORTANTE: O campo "usuario" do seu HTML agora deve receber o E-MAIL que você criou no Firebase
+    const email = document.getElementById("usuario").value.trim(); 
+    const Glen = document.getElementById("senha").value.trim();
 
-    const usuario = document.getElementById("usuario").value.trim();
-    const senha = document.getElementById("senha").value.trim();
-
-    if (usuario === USUARIO_CORRETO && senha === SENHA_CORRETA) {
-        localStorage.setItem("admLogado", "true");
-        window.location.href = "impressoras.html";
-    } else {
-        mostrarErroLogin("Usuário ou senha inválidos ❌");
+    if (!email || !senha) {
+        alert("Preencha todos os campos.");
+        return;
     }
-}
 
 document.addEventListener("DOMContentLoaded", () => {
     // Força a desconexão sempre que entrar na página de login.
