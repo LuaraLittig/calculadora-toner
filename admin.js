@@ -20,24 +20,25 @@ function limparErroLogin() {
 }
 
 function login() {
-   
+    
     const email = document.getElementById("usuario").value.trim(); 
-    const Glen = document.getElementById("senha").value.trim();
+
+    const senha = document.getElementById("senha").value.trim(); 
 
     if (!email || !senha) {
         alert("Preencha todos os campos.");
         return;
     }
 
-    
+  
     firebase.auth().signInWithEmailAndPassword(email, senha)
         .then((userCredential) => {
-    
+          
             localStorage.setItem("admLogado", "true");
             window.location.href = "impressoras.html";
         })
         .catch((error) => {
-            console.error("Erro ao logar:", error.message);
+            console.error("Erro detalhado do Firebase:", error.code, error.message);
             alert("E-mail ou senha incorretos! ❌");
         });
 }
