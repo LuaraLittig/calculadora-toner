@@ -1,8 +1,3 @@
-const modelosPadrao = {
-    kyocera3182: { nome: "Kyocera TK-3182", cheio: 800, vazio: 200 },
-    brother3492: { nome: "Brother TN-3492", cheio: 1100, vazio: 500 }
-};
-
 
 let modelos = {};
 
@@ -19,43 +14,44 @@ let ultimaPorcentagem = null;
 let ultimoPeso = null;
 let ultimoModelo = null;
 
-
 async function carregarModelosDoBanco() {
     try {
-        
         const snapshot = await db.collection("impressoras").get();
         const modelosCarregados = {};
 
         snapshot.forEach((doc) => {
             const item = doc.data();
             
+           
             modelosCarregados[doc.id] = {
-                nome: item.modelo + " - " + item.toner,
+                nome: `${item.fabricante} - ${item.modelo} (${item.toner})`,
                 cheio: Number(item.cheio),
                 vazio: Number(item.vazio)
             };
         });
 
-        
-        if (Object.keys(modelosCarregados).length === 0) {
-            modelos = modelosPadrao;
-        } else {
-            modelos = modelosCarregados;
-        }
+      
+        modelos = modelosCarregados;
 
     } catch (erro) {
-        console.error("Erro ao acessar o Firebase, usando modelos padrões locais:", erro);
-        modelos = modelosPadrao;
+        console.error("Erro ao acessar o Firebase:", erro);
+        mostrarErro("Erro ao carregar as impressoras do servidor.");
     }
 
-   
     preencherSelectModelos();
     atualizarLimitePeso();
 }
 
+
 function preencherSelectModelos() {
     if (!modeloSelect) return;
     modeloSelect.innerHTML = "";
+
+   
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.textContent = "Selecione uma impressora...";
+    modeloSelect.appendChild(placeholder);
 
     for (let chave in modelos) {
         const option = document.createElement("option");
@@ -79,12 +75,21 @@ function limparErro() {
     }
 }
 
+
 function atualizarLimitePeso() {
     if (!modeloSelect) return;
     const modelo = modeloSelect.value;
     const dados = modelos[modelo];
 
-    if (!dados || !pesoInput) return;
+    if (!dados || !pesoInput) {
+        if (pesoInput) {
+            pesoInput.value = "";
+            pesoInput.removeAttribute("min");
+            pesoInput.removeAttribute("max");
+        }
+        if (resultadoBox) resultadoBox.style.display = "none";
+        return;
+    }
 
     pesoInput.max = dados.cheio;
     pesoInput.min = dados.vazio;
@@ -102,9 +107,13 @@ function obterStatus(porcentagem) {
 function calcular() {
     limparErro();
 
-    
     const modelo = modeloSelect.value;
     const peso = parseFloat(pesoInput.value);
+
+    if (!modelo) {
+        mostrarErro("Por favor, selecione uma impressora primeiro.");
+        return;
+    }
 
     if (isNaN(peso)) {
         mostrarErro("Digite um peso válido.");
@@ -164,12 +173,9 @@ function imprimirEtiqueta() {
     };
 }
 
-
 document.addEventListener("DOMContentLoaded", () => {
-  
     carregarModelosDoBanco();
 
-  
     if (modeloSelect) {
         modeloSelect.addEventListener("change", atualizarLimitePeso);
     }
