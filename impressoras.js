@@ -1,12 +1,26 @@
-// Verifica se o admin está logado localmente
+
+firebase.auth().onAuthStateChanged((user) => {
+    if (!user) {
+        localStorage.removeItem("admLogado");
+        window.location.href = "admin.html";
+    }
+});
+
+
+function logout() {
+    firebase.auth().signOut().then(() => {
+        localStorage.removeItem("admLogado");
+        window.location.href = "admin.html";
+    });
+}
 if (localStorage.getItem("admLogado") !== "true") {
     window.location.href = "admin.html";
 }
 
-// Guarda o ID do documento que está sendo editado no momento
+
 let idEditando = null;
 
-// BUSCAR DO BANCO: Lista as impressoras direto da nuvem
+
 async function listarImpressoras() {
     const div = document.getElementById("listaImpressoras");
     if (!div) return;
@@ -25,7 +39,7 @@ async function listarImpressoras() {
 
         snapshot.forEach((doc) => {
             const item = doc.data();
-            const id = doc.id; // ID único do Firebase
+            const id = doc.id; 
 
             div.innerHTML += `
                 <div class="item-toner">
@@ -53,7 +67,7 @@ async function listarImpressoras() {
     }
 }
 
-// SALVAR NO BANCO: Adiciona um novo documento na nuvem
+
 async function salvarImpressora() {
     const fabricante = document.getElementById("fabricante").value.trim();
     const modelo = document.getElementById("modelo").value.trim();
@@ -86,7 +100,7 @@ async function salvarImpressora() {
     }
 }
 
-// Prepara o formulário com os dados da linha clicada
+
 function editarImpressora(id, fabricante, modelo, toner, cheio, vazio) {
     idEditando = id;
 
@@ -100,7 +114,7 @@ function editarImpressora(id, fabricante, modelo, toner, cheio, vazio) {
     document.getElementById("btnAtualizar").style.display = "block";
 }
 
-// ATUALIZAR NO BANCO: Salva as alterações feitas em um registro existente
+
 async function atualizarImpressora() {
     if (!idEditando) return;
 
@@ -132,7 +146,7 @@ async function atualizarImpressora() {
     }
 }
 
-// EXCLUIR DO BANCO: Remove o documento usando o ID único
+
 async function excluirImpressora(id) {
     if (!confirm("Deseja realmente excluir esta impressora?")) {
         return;
