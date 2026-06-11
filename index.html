@@ -40,15 +40,24 @@
             <button class="btn-etiqueta" onclick="imprimirEtiqueta()">Imprimir Etiqueta</button>
         </div>
 
+        <div class="historico-box" id="historicoBox" style="display: none; margin-top: 25px;">
+            <hr style="margin: 20px 0; border: 1px solid #334155;">
+            <h3 style="text-align: center; margin-bottom: 12px; color: #38bdf8;">📋 Últimas Pesagens</h3>
+            
+            <div id="listaHistorico" style="max-height: 240px; overflow-y: auto; padding-right: 5px;"></div>
+            
+            <button class="btn-sair" onclick="limparHistorico()" style="margin-top: 15px; background: #ef4444; background-image: none;">
+                Limpar Histórico
+            </button>
+        </div>
+
     </div>
 
-   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="conexao.js"></script>
 
-    <script src="script.js?v=2"></script>
-</body>
-</html>
+    <script src="script.js?v=3"></script>
 
 </body>
 
