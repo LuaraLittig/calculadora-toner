@@ -1,4 +1,3 @@
-
 let modelos = {};
 
 const modeloSelect = document.getElementById("modelo");
@@ -22,7 +21,6 @@ async function carregarModelosDoBanco() {
         snapshot.forEach((doc) => {
             const item = doc.data();
             
-           
             modelosCarregados[doc.id] = {
                 nome: `${item.fabricante} - ${item.modelo} (${item.toner})`,
                 cheio: Number(item.cheio),
@@ -30,7 +28,6 @@ async function carregarModelosDoBanco() {
             };
         });
 
-      
         modelos = modelosCarregados;
 
     } catch (erro) {
@@ -47,7 +44,6 @@ function preencherSelectModelos() {
     if (!modeloSelect) return;
     modeloSelect.innerHTML = "";
 
-   
     const placeholder = document.createElement("option");
     placeholder.value = "";
     placeholder.textContent = "Selecione uma impressora...";
@@ -93,7 +89,6 @@ function atualizarLimitePeso() {
 
     pesoInput.max = dados.cheio;
     pesoInput.min = dados.vazio;
-
     if (resultadoBox) resultadoBox.style.display = "none";
 }
 
@@ -103,6 +98,7 @@ function obterStatus(porcentagem) {
     if (porcentagem <= 70) return "Médio 🟡";
     return "Alto 🟢";
 }
+
 
 function calcular() {
     limparErro();
@@ -142,7 +138,70 @@ function calcular() {
     if (statusTexto) statusTexto.innerText = "Status: " + obterStatus(porcentagem);
     if (progressBar) progressBar.style.width = porcentagem + "%";
     if (resultadoBox) resultadoBox.style.display = "block";
+
+    
+    salvarNoHistorico(dados.nome, peso, porcentagem);
 }
+
+
+function salvarNoHistorico(nomeToner, peso, porcentagem) {
+    let historico = JSON.parse(localStorage.getItem("historicoPesagens")) || [];
+
+    const novaPesagem = {
+        data: new Date().toLocaleString("pt-BR", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" }),
+        toner: nomeToner,
+        peso: peso,
+        porcentagem: porcentagem.toFixed(2),
+        status: obterStatus(porcentagem)
+    };
+
+   
+    historico.unshift(novaPesagem);
+
+    
+    if (historico.length > 10) {
+        historico.pop();
+    }
+
+    localStorage.setItem("historicoPesagens", JSON.stringify(historico));
+    renderizarHistorico();
+}
+
+function renderizarHistorico() {
+    const lista = document.getElementById("listaHistorico");
+    const box = document.getElementById("historicoBox");
+    if (!lista || !box) return;
+
+    let historico = JSON.parse(localStorage.getItem("historicoPesagens")) || [];
+
+    if (historico.length === 0) {
+        box.style.display = "none";
+        return;
+    }
+
+    box.style.display = "block";
+    lista.innerHTML = "";
+
+    
+    historico.forEach((item) => {
+        lista.innerHTML += `
+            <div class="item-toner" style="margin-top: 10px; padding: 10px; font-size: 13px; text-align: left;">
+                <span style="font-size: 11px; color: #94a3b8; float: right;">${item.data}</span>
+                <strong>${item.toner}</strong><br>
+                <span style="margin-top: 5px; display: block;">Peso: <b>${item.peso}g</b></span>
+                <span style="display: block;">Resultado: <b style="color: #38bdf8;">${item.porcentagem}%</b> (${item.status})</span>
+            </div>
+        `;
+    });
+}
+
+function limparHistorico() {
+    if (confirm("Deseja apagar todo o histórico de pesagens recente?")) {
+        localStorage.removeItem("historicoPesagens");
+        renderizarHistorico();
+    }
+}
+
 
 function imprimirEtiqueta() {
     if (ultimaPorcentagem === null) {
@@ -160,22 +219,17 @@ function imprimirEtiqueta() {
     janela.document.write(`
         <html>
         <head>
-            <title>Imprimir Etiqueta</title>
+            <title>Etiqueta</title>
             <style>
-               
                 @page {
-                    size: 60mm 40mm; 
-                    margin: 0;       
-                }
-                
-                * {
-                    box-sizing: border-box;
-                }
-
-                body {
-                    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                    size: 60mm 40mm;
                     margin: 0;
-                    padding: 4mm; /* Espaçamento interno para o texto não colar na borda */
+                }
+                * { box-sizing: border-box; }
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 4mm;
                     width: 60mm;
                     height: 40mm;
                     background: #fff;
@@ -184,40 +238,26 @@ function imprimirEtiqueta() {
                     flex-direction: column;
                     justify-content: space-between;
                 }
-
-                /* Topo da etiqueta */
                 .header {
                     font-size: 9px;
                     font-weight: bold;
                     text-transform: uppercase;
-                    letter-spacing: 0.5px;
                     border-bottom: 1px dashed #000;
                     padding-bottom: 2px;
                     text-align: center;
                 }
-
-                /* Nome do modelo/toner centralizado e em destaque */
                 .modelo-titulo {
                     font-size: 11px;
                     font-weight: bold;
                     text-align: center;
                     margin: 4px 0;
                     line-height: 1.2;
-                    display: -webkit-box;
-                    -webkit-line-clamp: 2;
-                    -webkit-box-orient: vertical;
-                    overflow: hidden;
                 }
-
-                /* Informações de peso e dados extras */
                 .dados {
                     font-size: 10px;
                     display: flex;
                     justify-content: space-between;
-                    margin-bottom: 2px;
                 }
-
-                /* Destaque visual grande para a porcentagem */
                 .resultado-bloco {
                     background: #000;
                     color: #fff;
@@ -226,56 +266,40 @@ function imprimirEtiqueta() {
                     font-size: 16px;
                     font-weight: bold;
                     border-radius: 3px;
-                    text-transform: uppercase;
                 }
-
                 .status-texto {
                     font-size: 8px;
-                    text-align: center;
                     font-weight: normal;
                     margin-top: 1px;
-                    color: #fff;
                 }
             </style>
         </head>
         <body>
-
-            <div class="header">
-                Supriservice • Controle de Qualidade
-            </div>
-
-            <div class="modelo-titulo">
-                ${nomeToner}
-            </div>
-
+            <div class="header">Supriservice • Controle</div>
+            <div class="modelo-titulo">${nomeToner}</div>
             <div class="dados">
                 <span><b>Peso:</b> ${ultimoPeso}g</span>
                 <span>${dataAtual} - ${horaAtual}</span>
             </div>
-
             <div class="resultado-bloco">
                 ${ultimaPorcentagem.toFixed(1)}%
                 <div class="status-texto">${statusToner.replace(/🟢|🟡|🟠|⚠️/g, '')}</div>
             </div>
-
         </body>
         </html>
     `);
 
     janela.document.close();
-
-    
     janela.onload = () => {
         janela.print();
-        
-        setTimeout(() => {
-            janela.close();
-        }, 500);
+        setTimeout(() => { janela.close(); }, 500);
     };
 }
 
+
 document.addEventListener("DOMContentLoaded", () => {
     carregarModelosDoBanco();
+    renderizarHistorico(); 
 
     if (modeloSelect) {
         modeloSelect.addEventListener("change", atualizarLimitePeso);
